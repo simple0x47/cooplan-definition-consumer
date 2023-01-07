@@ -1,0 +1,84 @@
+{
+  "input": [
+    {
+      "id": "definition_by_version",
+      "request": {
+        "queue_name": "definition",
+        "publish": {
+          "exchange": "",
+          "options": {
+            "mandatory": false,
+            "immediate": false,
+            "nowait": false
+          },
+          "properties": {}
+        },
+        "response": {
+          "queue": {
+            "name": "",
+            "declare": {
+              "options": {
+                "passive": false,
+                "durable": false,
+                "exclusive": false,
+                "auto_delete": true,
+                "nowait": false
+              },
+              "arguments": {}
+            }
+          },
+          "qos": {
+            "prefetch_count": 1,
+            "options": {
+              "global": true
+            }
+          },
+          "consume": {
+            "options": {
+              "no_local": true,
+              "no_ack": false,
+              "exclusive": true,
+              "nowait": false
+            },
+            "arguments": {
+            }
+          },
+          "acknowledge": {
+            "multiple": false
+          },
+          "reject": {
+            "requeue": false
+          }
+        }
+      }
+    }
+  ],
+  "output": [
+    {
+      "id": "latest_definition",
+      "queue_name": "latest_definition",
+      "qos": {
+        "prefetch_count": 1,
+        "options": {
+          "global": true
+        }
+      },
+      "consume": {
+        "options": {
+          "no_local": true,
+          "no_ack": false,
+          "exclusive": true,
+          "nowait": false
+        },
+        "arguments": {
+        }
+      },
+      "acknowledge": {
+        "multiple": false
+      },
+      "reject": {
+        "requeue": false
+      }
+    }
+  ]
+}

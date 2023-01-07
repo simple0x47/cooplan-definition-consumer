@@ -7,6 +7,14 @@ pub enum ErrorKind {
     StateUpdateFailure,
 }
 
+impl From<cooplan_auth::error::ErrorKind> for ErrorKind {
+    fn from(error_kind: cooplan_auth::error::ErrorKind) -> Self {
+        match error_kind {
+            _ => ErrorKind::InternalFailure,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Error {
     pub kind: ErrorKind,
@@ -29,5 +37,16 @@ impl Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.message)
+    }
+}
+
+impl From<cooplan_auth::error::Error> for Error {
+    fn from(error: cooplan_auth::error::Error) -> Self {
+        let error_kind: ErrorKind = error.kind().into();
+
+        Error {
+            kind: error_kind,
+            message: error.message,
+        }
     }
 }
