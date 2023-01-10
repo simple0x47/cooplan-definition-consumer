@@ -53,6 +53,10 @@ jobs:
       run: |
         chmod +x cooplan-definition-provider
         ./cooplan-definition-provider api.json config.json &
+      env:
+        DEFINITION_REPOSITORY: simple0x47/cooplan-definitions
+        DEFINITION_GIT_USER: simple0x47
+        DEFINITION_GIT_TOKEN: ${{ secrets.ACCESS_TOKEN }}
     - name: Run tests
       run: cargo test --verbose
       env:
