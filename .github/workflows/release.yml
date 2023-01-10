@@ -41,7 +41,7 @@ jobs:
         cargo login ${{ secrets.CRATES_IO_TOKEN }}
         export CONSUMER_VERSION=${{ format('{0}.{1}.{2}', env.MAJOR_VERSION, env.MINOR_VERSION, github.run_number) }}
         sed -i -e "s/^version = .*/version = \"$CONSUMER_VERSION\"/" Cargo.toml
-        cargo publish
+        cargo publish --allow-dirty
     - name: Upload config.json
       uses: actions/upload-release-asset@v1
       env:
