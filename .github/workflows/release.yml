@@ -19,7 +19,8 @@ jobs:
     steps:
     - name: Checkout definition provider
       uses: actions/checkout@v3
-    
+    - name: Build
+      run: cargo build --release
     - name: Create release tag
       id: create_release_tag
       run: |
@@ -40,7 +41,7 @@ jobs:
         cargo login ${{ secrets.CRATES_IO_TOKEN }}
         export CONSUMER_VERSION=${{ format('{0}.{1}.{2}', env.MAJOR_VERSION, env.MINOR_VERSION, github.run_number) }}
         sed -i -e "s/^version = .*/version = \"$CONSUMER_VERSION\"/" Cargo.toml
-        cat Cargo.toml
+        cargo publish
     - name: Upload config.json
       uses: actions/upload-release-asset@v1
       env:
