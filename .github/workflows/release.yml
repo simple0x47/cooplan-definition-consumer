@@ -39,7 +39,7 @@ jobs:
     - name: Upload library to crates.io
       run: |
         cargo login ${{ secrets.CRATES_IO_TOKEN }}
-        export VERSION=${{ format("{0}.{1}.{2}", env.MAJOR_VERSION, env.MINOR_VERSION, env.GITHUB_RUN_NUMBER) }}
+        export VERSION=${{ format('{0}.{1}.{2}', env.MAJOR_VERSION, env.MINOR_VERSION, env.GITHUB_RUN_NUMBER) }}
         sed -i -e 's/^version = .*/version = "$VERSION"/' Cargo.toml
         cargo publish
     - name: Upload config.json
