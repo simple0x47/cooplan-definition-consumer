@@ -18,6 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    services:
+      rabbitmq:
+        image: rabbitmq:3.11
+        ports:
+          - 5672:5672
+
     steps:
     - uses: actions/checkout@v3
     - name: Build
@@ -28,6 +34,9 @@ jobs:
         repo: 'simple0x47/cooplan-definition-provider'
         file: 'cooplan-definition-provider'
         token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Wait for RabbitMQ to become alive
+      run: |
+        sleep 15
     - name: Run Cooplan Definition Provider
       run: |
         chmod +x cooplan-definition-provider
