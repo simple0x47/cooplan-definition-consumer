@@ -83,7 +83,24 @@ impl DefinitionRequestDispatch {
         };
 
         loop {
-            let token_result = self.renew_token_if_missing_or_expired().await;
+            let token_result = match self
+                .identity
+                .renew_token_if_expiring_after_seconds(
+                    self.token.clone(),
+                    self.token_expiration_margin_in_seconds,
+                )
+                .await
+            {
+                Ok(token) => {
+                    self.token = token;
+
+                    Ok(())
+                }
+                Err(error) => Err(Error::new(
+                    ErrorKind::ExternalFailure,
+                    format!("failed to get token: {}", error),
+                )),
+            };
 
             let request = match self.request_receiver.recv().await {
                 Ok(request) => request,
@@ -103,6 +120,8 @@ impl DefinitionRequestDispatch {
                     continue;
                 }
             };
+
+            let api_consumer = self.api_consumer.clone();
 
             match request {
                 DefinitionStorageAction::FindByVersion { version, replier } => {
@@ -124,7 +143,10 @@ impl DefinitionRequestDispatch {
 
                             log::error!("{}", error_message);
 
-                            match replier.send(Err(error)) {
+                            match replier.send(Err(cooplan_amqp_api_consumer::error::Error::new(
+                                cooplan_amqp_api_consumer::error::ErrorKind::InternalFailure,
+                                error_message,
+                            ))) {
                                 Ok(_) => (),
                                 Err(_) => log::error!("failed to send error to replier"),
                             }
@@ -137,12 +159,14 @@ impl DefinitionRequestDispatch {
                         version,
                         channel.clone(),
                         self.token.value().to_string(),
+                        api_consumer,
                         replier,
                     ));
                 }
                 DefinitionStorageAction::FindLatest { replier } => {
                     tokio::spawn(elements::amqp_definition::find_latest(
                         channel.clone(),
+                        api_consumer,
                         replier,
                     ));
                 }
@@ -153,24 +177,5 @@ impl DefinitionRequestDispatch {
                 Err(error) => log::warn!("failed to send state: {}", error),
             }
         }
-    }
-
-    async fn renew_token_if_missing_or_expired(&mut self) -> Result<(), Error> {
-        if self
-            .token
-            .does_expire_after(self.token_expiration_margin_in_seconds)
-        {
-            self.token = match self.identity.try_get_token().await {
-                Ok(token) => token,
-                Err(error) => {
-                    return Err(Error::new(
-                        ErrorKind::InternalFailure,
-                        format!("failed to get token: {}", error),
-                    ))
-                }
-            };
-        }
-
-        Ok(())
     }
 }

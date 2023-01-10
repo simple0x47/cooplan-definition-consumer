@@ -3,8 +3,11 @@ use std::fmt;
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum ErrorKind {
     InternalFailure,
+    ExternalFailure,
     AutoConfigFailure,
     StateUpdateFailure,
+    AmqpFailure,
+    ApiFailure,
 }
 
 impl From<cooplan_auth::error::ErrorKind> for ErrorKind {

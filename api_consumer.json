@@ -12,45 +12,46 @@
             "nowait": false
           },
           "properties": {}
-        },
-        "response": {
-          "queue": {
-            "name": "",
-            "declare": {
-              "options": {
-                "passive": false,
-                "durable": false,
-                "exclusive": false,
-                "auto_delete": true,
-                "nowait": false
-              },
-              "arguments": {}
-            }
-          },
-          "qos": {
-            "prefetch_count": 1,
+        }
+      },
+      "response": {
+        "queue": {
+          "name": "",
+          "declare": {
             "options": {
-              "global": true
-            }
-          },
-          "consume": {
-            "options": {
-              "no_local": true,
-              "no_ack": false,
-              "exclusive": true,
+              "passive": false,
+              "durable": false,
+              "exclusive": false,
+              "auto_delete": true,
               "nowait": false
             },
-            "arguments": {
-            }
-          },
-          "acknowledge": {
-            "multiple": false
-          },
-          "reject": {
-            "requeue": false
+            "arguments": {}
           }
+        },
+        "qos": {
+          "prefetch_count": 1,
+          "options": {
+            "global": false
+          }
+        },
+        "consume": {
+          "options": {
+            "no_local": true,
+            "no_ack": false,
+            "exclusive": true,
+            "nowait": false
+          },
+          "arguments": {
+          }
+        },
+        "acknowledge": {
+          "multiple": false
+        },
+        "reject": {
+          "requeue": false
         }
-      }
+      },
+      "wait_for_response_timeout_after_seconds": 10
     }
   ],
   "output": [
@@ -60,7 +61,7 @@
       "qos": {
         "prefetch_count": 1,
         "options": {
-          "global": true
+          "global": false
         }
       },
       "consume": {
@@ -71,6 +72,9 @@
           "nowait": false
         },
         "arguments": {
+          "x-stream-offset": {
+            "LongString": [108, 97, 115, 116]
+          }
         }
       },
       "acknowledge": {
@@ -78,7 +82,8 @@
       },
       "reject": {
         "requeue": false
-      }
+      },
+      "timeout_after_seconds": 10
     }
   ]
 }

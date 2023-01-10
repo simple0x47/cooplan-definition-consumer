@@ -1,0 +1,13 @@
+{
+  "amqp_connect_config": {
+    "uri": "amqp://guest:guest@localhost:5672",
+    "options": {
+      "locale": "en_US",
+      "client_properties": {}
+    },
+    "owned_tls_config": {}
+  },
+  "concurrent_request_dispatch_instances": 4,
+  "token_expiration_margin_in_seconds": 30,
+  "request_boundary": 128
+}

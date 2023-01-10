@@ -1,4 +1,4 @@
-use crate::error::Error;
+use cooplan_amqp_api_consumer::error::Error;
 use cooplan_definitions_lib::definition::Definition;
 use tokio::sync::oneshot::Sender;
 

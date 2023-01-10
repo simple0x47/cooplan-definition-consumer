@@ -7,10 +7,10 @@ use cooplan_lapin_wrapper::config::api_consumer;
 use cooplan_state_tracker::state_tracker_client::StateTrackerClient;
 use std::sync::Arc;
 
-mod config;
-mod error;
-mod logic;
-mod storage;
+pub mod config;
+pub mod error;
+pub mod logic;
+pub mod storage;
 
 pub async fn initialize_api_consumer(
     consumer_config_file: &str,
