@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    branches:
+      ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
+  MAJOR_VERSION: 0
+  MINOR_VERSION: 1
+  
+jobs:
+  build:
+  
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout definition provider
+      uses: actions/checkout@v3
+    - name: Build
+      run: cargo build --release
+    - name: Create release tag
+      id: create_release_tag
+      run: |
+        echo ::set-output name=tag_name::"inc.$GITHUB_RUN_NUMBER"
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.create_release_tag.outputs.tag_name }}
+        release_name: ${{ format('Release {0}', steps.create_release_tag.outputs.tag_name) }}
+        body: ${{ github.event.head_commit.message }}
+        draft: false
+        prerelease: false
+    - name: Upload library to crates.io
+      run: |
+        cargo login ${{ secrets.CRATES_IO_TOKEN }}
+        sed -i -e 's/^version = .*/version = "${{ format({0}.{1}.{2}, env.MAJOR_VERSION, env.MINOR_VERSION, env.GITHUB_RUN_NUMBER) }}"/' Cargo.toml
+        cargo publish
+    - name: Upload config.json
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./config.json
+        asset_name: config.json
+        asset_content_type: application/json
+    - name: Upload api_consumer.json
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./api_consumer.json
+        asset_name: api_consumer.json
+        asset_content_type: application/json
