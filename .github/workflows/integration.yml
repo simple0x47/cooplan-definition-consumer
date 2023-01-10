@@ -1,0 +1,43 @@
+name: Integration testing
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      ["main"]
+  pull_request:
+    branches:
+      ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cargo build --verbose
+    - name: Download Cooplan Definition Provider
+      uses: dsaltares/fetch-gh-release-asset@1.1.0
+      with:
+        repo: 'simple0x47/cooplan-definition-provider'
+        file: 'cooplan-definition-provider'
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run Cooplan Definition Provider
+      run: |
+        chmod +x cooplan-definition-provider
+        ./cooplan-definition-provider &
+    - name: Run tests
+      run: cargo test --verbose
+      env:
+        API_CONSUMER_FILE: ./api_consumer.json
+        CONSUMER_CONFIG_FILE: ./config.json
+        IDENTITY_CLIENT_AUDIENCE: ${{ secrets.IDENTITY_CLIENT_AUDIENCE }}
+        IDENTITY_CLIENT_ID: ${{ secrets.IDENTITY_CLIENT_ID }}
+        IDENTITY_CLIENT_SECRET: ${{ secrets.IDENTITY_CLIENT_SECRET }}
+        IDENTITY_PROVIDER_URL: ${{ secrets.IDENTITY_PROVIDER_URL }}
