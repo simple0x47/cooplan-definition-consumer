@@ -64,9 +64,8 @@ jobs:
         ./cooplan-definition-provider api.json config.json &
         cd ../
       env:
-        DEFINITION_REPOSITORY: simple0x47/cooplan-definitions
-        DEFINITION_GIT_USER: simple0x47
-        DEFINITION_GIT_TOKEN: ${{ secrets.DEFINITIONS_ACCESS_TOKEN }}
+        GIT_USERNAME: 'simple0x47'
+        GIT_PASSWORD: ${{ secrets.DEFINITIONS_ACCESS_TOKEN }}
     - name: Run tests
       run: cargo test --verbose
       env:
