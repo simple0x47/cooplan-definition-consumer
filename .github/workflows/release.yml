@@ -39,7 +39,8 @@ jobs:
     - name: Upload library to crates.io
       run: |
         cargo login ${{ secrets.CRATES_IO_TOKEN }}
-        sed -i -e "s/^version = .*/version = \"${{ format('{0}.{1}.{2}', env.MAJOR_VERSION, env.MINOR_VERSION, env.GITHUB_RUN_NUMBER) }}\"/" Cargo.toml
+        export CONSUMER_VERSION=${{ format('{0}.{1}.{2}', env.MAJOR_VERSION, env.MINOR_VERSION, env.GITHUB_RUN_NUMBER) }}
+        sed -i -e "s/^version = .*/version = \"$CONSUMER_VERSION\"/" Cargo.toml
         cargo publish
     - name: Upload config.json
       uses: actions/upload-release-asset@v1
