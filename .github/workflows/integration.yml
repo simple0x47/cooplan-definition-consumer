@@ -33,25 +33,19 @@ jobs:
       run: |
         mkdir provider
         echo "provider_path=$(realpath ./provider/)" >> $GITHUB_OUTPUT
-    - name: Try read output
-      run: |
-        echo "0"
-        echo ${{ steps.provider_path.outputs.provider_path }}
-        echo "1"
-        echo ${{ steps.provider_path.outputs.provider_path }}
     - name: Download Cooplan Definition Provider
       uses: dsaltares/fetch-gh-release-asset@1.1.0
       with:
         repo: 'simple0x47/cooplan-definition-provider'
         file: 'cooplan-definition-provider'
         token: ${{ secrets.GITHUB_TOKEN }}
-        target: ${{ join(steps.provider_path.outputs.*, '') }}
+        target: ${{ format('{0}/cooplan-definition-provider', steps.provider_path.outputs.provider_path) }}
     - name: Download provider`s api.json
       uses: dsaltares/fetch-gh-release-asset@1.1.0
       with:
         repo: 'simple0x47/cooplan-definition-provider'
         file: 'api.json'
-        target: ${{ join(steps.provider_path.outputs.*, '') }}
+        target: ${{ format('{0}/api.json', steps.provider_path.outputs.provider_path) }}
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Download provider`s config.json
       uses: dsaltares/fetch-gh-release-asset@1.1.0
@@ -59,7 +53,7 @@ jobs:
         repo: 'simple0x47/cooplan-definition-provider'
         file: 'config.json'
         token: ${{ secrets.GITHUB_TOKEN }}
-        target: ${{ join(steps.provider_path.outputs.*, '') }}
+        target: ${{ format('{0}/config.json', steps.provider_path.outputs.provider_path) }}
     - name: Wait for RabbitMQ to become alive
       run: |
         sleep 15
