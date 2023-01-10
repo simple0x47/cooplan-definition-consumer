@@ -44,7 +44,7 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
       env:
-        API_CONSUMER_FILE: ./api_consumer.json
+        API_CONSUMER_FILE: ./api.json
         CONSUMER_CONFIG_FILE: ./config.json
         IDENTITY_CLIENT_AUDIENCE: ${{ secrets.IDENTITY_CLIENT_AUDIENCE }}
         IDENTITY_CLIENT_ID: ${{ secrets.IDENTITY_CLIENT_ID }}
